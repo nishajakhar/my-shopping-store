@@ -102,6 +102,7 @@ contract Store {
         totalItemsSold += totalQty;
         discountsGiven += discount;
         customerOrders[msg.sender].push(newOrder);
+        emit OrderPlaced(orderId, netTotal);
         return orderId;
     }
 
@@ -133,6 +134,7 @@ contract Store {
         discountsGiven -= order.discount;
 
         payable(msg.sender).call{value : order.netTotal}("");
+        emit OrderCancelled(_orderId, netTotal);
     }
 
     /* 
@@ -282,6 +284,12 @@ contract Store {
     */
     function updateSaleSatus() public onlyMerchant {
         isSaleOn = !(isSaleOn);
+         if(isSaleOn) {
+          emit SaleStarted(discountPercentage);
+        }
+        else {
+          emit SaleEnded();
+        }
     }
 
     /* 
